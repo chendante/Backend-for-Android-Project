@@ -7,6 +7,7 @@ func InitRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.POST("/sign-in", SignIn)
+	router.POST("/sign-token", SignToken)
 	router.POST("/student/get-lesson", GetStuLessons)
 	return router
 }

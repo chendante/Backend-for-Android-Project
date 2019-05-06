@@ -2,6 +2,12 @@ package model
 
 import (
 	. "Backend-for-Android-Project/model/base"
+	"crypto/md5"
+	"fmt"
+	"github.com/gomodule/redigo/redis"
+	"io"
+	"strconv"
+	"time"
 )
 
 type User struct {
@@ -40,6 +46,10 @@ func SignIn(id uint, password string) (string,string, bool) {
 	if user.Name == "" || password == "" {
 		return "","", false
 	}
+	return getBaseInfo(id)
+}
+
+func getBaseInfo(id uint) (string, string, bool) {
 	var result User
 	Db.Table("teacher").Select("user.name").Joins("inner join user on user.id = teacher.TID").Where("teacher.TID = ?", id).Scan(&result)
 	if result.Name != "" {
@@ -50,4 +60,32 @@ func SignIn(id uint, password string) (string,string, bool) {
 		return result.Name,"student", true
 	}
 	return "","", false
+}
+
+func CreatToken(id uint) string {
+	cruTime := time.Now().Unix()
+	h := md5.New()
+	io.WriteString(h, strconv.FormatInt(cruTime, 10))
+	token := fmt.Sprintf("%x", h.Sum(nil))
+	_, _ = MRedis.Do("set", token, id, "EX", 3*24*3600) //设置3天过期
+	return token
+}
+
+func Token2ID(token string) uint {
+	id, err := redis.Uint64(MRedis.Do("get", token))
+	if err == nil{
+		return uint(id)
+	} else {
+		return 0
+	}
+}
+
+func SignToken(token string) (string, string, bool) {
+	id := Token2ID(token)
+	fmt.Println(id)
+	if id == 0{
+		return "", "", false
+	} else {
+		return getBaseInfo(id)
+	}
 }
