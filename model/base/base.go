@@ -11,6 +11,7 @@ import (
 
 var Db *gorm.DB
 var MRedis redis.Conn
+var BaseUrl string
 
 func init() {
 	var err error
@@ -31,4 +32,6 @@ func init() {
 	if err != nil {
 		fmt.Println("Connect to redis error", err)
 	}
+
+	BaseUrl = dataLoaded["BaseUrl"]
 }

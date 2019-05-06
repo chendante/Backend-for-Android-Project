@@ -1,11 +1,21 @@
 package model
 
-import . "Backend-for-Android-Project/model/base"
+import (
+	. "Backend-for-Android-Project/model/base"
+	"crypto/md5"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"io"
+	"mime/multipart"
+	"strconv"
+	"time"
+)
 
 type Lesson struct {
 	Lid        	uint    	`gorm:"primary_key"`
 	LessonName 	string  	`gorm:"size:255"`
 	LessonTime 	string  	`gorm:"size:255"`
+	Tid			uint
 	Name		string
 }
 
@@ -24,11 +34,11 @@ func (StuLesson) TableName() string {
 }
 
 type Attachment struct {
-	AID	uint
-	FileName	string
-	FilePath	string
-	UniName		string
-	LID			uint
+	Aid      uint
+	FileName string
+	FilePath string
+	UniName  string
+	Lid      uint
 }
 
 func (Attachment) TableName() string {
@@ -37,10 +47,50 @@ func (Attachment) TableName() string {
 
 func GetStudentLessons(SID uint) ([]Lesson, bool) {
 	var lessons []Lesson
-	Db.Table("Lesson").Select("Lesson.*, user.name").Joins("inner join teacher on teacher.tid = Lesson.tid").Joins("inner join user on user.id = teacher.tid").Joins("inner join StuLesson on StuLesson.LID = Lesson.LID").Joins("inner join student on StuLesson.SID = student.SID").Where(Student{Sid:SID}).Find(&lessons)
+	Db.Table("Lesson").Select("Lesson.*, user.name").Joins("inner join teacher on teacher.tid = Lesson.tid").Joins("inner join user on user.id = teacher.tid").Joins("inner join StuLesson on StuLesson.Lid = Lesson.Lid").Joins("inner join student on StuLesson.SID = student.SID").Where(Student{Sid:SID}).Find(&lessons)
 	if len(lessons) == 0 {
 		return nil, false
 	}else {
 		return lessons, true
 	}
+}
+
+func GetTeacherLessons(TID uint) ([]Lesson, bool) {
+	var lessons []Lesson
+	Db.Table("Lesson").Select("Lesson.*").Where(Lesson{Tid:TID}).Find(&lessons)
+	if len(lessons) == 0{
+		return nil, false
+	}else {
+		return lessons, true
+	}
+}
+
+func UploadAttachment(file *multipart.FileHeader, c *gin.Context, tid uint, lid uint) (string, bool) {
+	if tid == 0{
+		return "", false
+	}
+	uniName := getUniName()
+	fileName := file.Filename
+	filePath := "./filedata"+"/"+ uniName
+	err := c.SaveUploadedFile(file, filePath)
+	attachment := Attachment{FileName: fileName, FilePath: filePath, Lid: lid, UniName: uniName}
+	Db.Create(&attachment)
+	var success bool = true
+	fmt.Println(attachment.Aid)
+	if !Db.NewRecord(&attachment){
+		success = false
+	}
+	if err != nil{
+		success = false
+		fmt.Println(err.Error())
+	}
+	return fileName, success
+}
+
+func getUniName() string {
+	cruTime := time.Now().Unix()
+	h := md5.New()
+	io.WriteString(h, strconv.FormatInt(cruTime, 10))
+	token := fmt.Sprintf("%x", h.Sum(nil))
+	return token
 }

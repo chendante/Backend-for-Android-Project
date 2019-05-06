@@ -26,6 +26,9 @@ func SignIn(c *gin.Context) {
 func SignToken(c *gin.Context) {
 	token := c.PostForm("token")
 	name, userType, success := model.SignToken(token)
+	if !success{
+		token = ""
+	}
 	c.JSON(200, gin.H{
 		"success":  success,
 		"name": name,
