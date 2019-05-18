@@ -12,6 +12,7 @@ import (
 var Db *gorm.DB
 var MRedis redis.Conn
 var BaseUrl string
+var UploadUri	string
 
 func init() {
 	var err error
@@ -34,4 +35,5 @@ func init() {
 	}
 
 	BaseUrl = dataLoaded["BaseUrl"]
+	UploadUri = dataLoaded["UploadUri"]
 }

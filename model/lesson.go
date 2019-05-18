@@ -71,7 +71,7 @@ func UploadAttachment(file *multipart.FileHeader, c *gin.Context, tid uint, lid 
 	}
 	uniName := getUniName()
 	fileName := file.Filename
-	filePath := "./filedata"+"/"+ uniName
+	filePath := UploadUri + uniName
 	err := c.SaveUploadedFile(file, filePath)
 	attachment := Attachment{FileName: fileName, FilePath: filePath, Lid: lid, UniName: uniName}
 	Db.Create(&attachment)
@@ -85,6 +85,20 @@ func UploadAttachment(file *multipart.FileHeader, c *gin.Context, tid uint, lid 
 		fmt.Println(err.Error())
 	}
 	return fileName, success
+}
+
+func GetAttachmentUniName(lid uint) (string, bool) {
+	var attachment Attachment
+	rowNum := Db.Where(&Attachment{Lid:lid}).First(&attachment).RowsAffected
+	if rowNum == 0{
+		return "", false
+	} else {
+		return attachment.UniName, true
+	}
+}
+
+func DownloadUrl(uniName string) string {
+	return BaseUrl+uniName
 }
 
 func getUniName() string {

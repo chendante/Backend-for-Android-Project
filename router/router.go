@@ -11,5 +11,9 @@ func InitRouter() *gin.Engine {
 	router.POST("/student/get-lesson", GetStuLessons)
 	router.POST("/teacher/get-lesson", GetTchLessons)
 	router.POST("/lesson/upload-attachment", UploadAttachment)
+	router.POST("/teacher/new-register", NewRegister)
+	router.POST("/teacher/delete-register", DeleteRegister)
+	router.POST("/teacher/get-attendance", GetAttendance)
+	router.POST("/student/attend", StuAttend)
 	return router
 }
