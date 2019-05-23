@@ -75,7 +75,7 @@ func UploadAttachment(file *multipart.FileHeader, c *gin.Context, tid uint, lid 
 	err := c.SaveUploadedFile(file, filePath)
 	attachment := Attachment{FileName: fileName, FilePath: filePath, Lid: lid, UniName: uniName}
 	Db.Create(&attachment)
-	var success bool = true
+	var success = true
 	fmt.Println(attachment.Aid)
 	if !Db.NewRecord(&attachment){
 		success = false

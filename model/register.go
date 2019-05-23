@@ -28,6 +28,14 @@ func (AttendanceBook) TableName() string {
 	return "AttendanceBook"
 }
 
+type AttendanceInfo struct {
+	Adid	uint
+	Rid		uint
+	Sid		uint
+	AnswerTime	time.Time
+	Name	string
+}
+
 func CreateRegister(lid uint) int {
 	register := Register{Lid:lid, BeginTime:time.Now(), DeleteStatus: 1}
 	Db.Create(&register)
@@ -40,7 +48,7 @@ func DeleteRegister(rid uint) {
 	var register Register
 	Db.First(&register, rid)
 	register.DeleteStatus = 0
-	Db.Save(register)
+	Db.Save(&register)
 }
 
 func StuSelectRegister(sid uint) (Register, bool) {
@@ -67,8 +75,9 @@ func PostAttendance(sid, rid uint) bool {
 	return !Db.NewRecord(attendanceBook)
 }
 
-func SelectAttendance(rid uint) []AttendanceBook {
-	var attendances []AttendanceBook
-	Db.Where(&AttendanceBook{Rid:rid}).Find(&attendances)
+func SelectAttendance(rid uint) []AttendanceInfo {
+	var attendances []AttendanceInfo
+	//Db.Where(&AttendanceBook{Rid:rid}).Find(&attendances)
+	Db.Table("student").Select("AttendanceBook.*, user.name").Joins("inner Join user on student.sid = user.id").Joins("inner Join StuLesson on StuLesson.sid = student.sid").Joins("inner Join Lesson on Lesson.lid = StuLesson.lid").Joins("inner join Register on Register.lid = Lesson.lid").Joins("left join AttendanceBook on AttendanceBook.rid = Register.rid and AttendanceBook.sid = student.sid").Where("Register.rid = ?", rid).Find(&attendances)
 	return attendances
 }

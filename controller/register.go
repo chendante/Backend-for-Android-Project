@@ -42,7 +42,7 @@ func GetAttendance(c *gin.Context) {
 	token, _ := c.GetPostForm("token")
 	rid, _ := c.GetPostForm("rid")
 	id := model.Token2ID(token)
-	var attendances []model.AttendanceBook
+	var attendances []model.AttendanceInfo
 	if id == 0{
 		token = ""
 	} else {
