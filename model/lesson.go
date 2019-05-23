@@ -16,6 +16,7 @@ type Lesson struct {
 	LessonName 	string  	`gorm:"size:255"`
 	LessonTime 	string  	`gorm:"size:255"`
 	Tid			uint
+	LessonAddress	string
 	Name		string
 }
 
@@ -47,7 +48,7 @@ func (Attachment) TableName() string {
 
 func GetStudentLessons(SID uint) ([]Lesson, bool) {
 	var lessons []Lesson
-	Db.Table("Lesson").Select("Lesson.*, user.name").Joins("inner join teacher on teacher.tid = Lesson.tid").Joins("inner join user on user.id = teacher.tid").Joins("inner join StuLesson on StuLesson.Lid = Lesson.Lid").Joins("inner join student on StuLesson.SID = student.SID").Where(Student{Sid:SID}).Find(&lessons)
+	Db.Table("StuLesson").Select("Lesson.*, user.name").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner join user on user.id = Lesson.tid").Where("StuLesson.sid = ?", SID).Find(&lessons)
 	if len(lessons) == 0 {
 		return nil, false
 	}else {

@@ -22,5 +22,7 @@ func InitRouter() *gin.Engine {
 	router.POST("/teacher/update-question", UpdateQuestion)
 	router.POST("/question/get-file-url", GetQuestionDownloadUrl)
 	router.POST("/student/post-answer", PostAnswer)
+
+	router.POST("/student/info", StudentInfo)
 	return router
 }

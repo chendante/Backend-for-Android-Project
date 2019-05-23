@@ -74,3 +74,7 @@ func PostAnswer(sid uint, qid uint, questionNum uint, answerString string) bool 
 //func SelectAnswers(qid uint, questionNum uint) []Answer {
 //
 //}
+
+//func SelectStudentQuestion(sid uint) {
+//
+//}

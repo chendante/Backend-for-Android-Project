@@ -13,6 +13,14 @@ type Register struct {
 	DeleteStatus	int
 }
 
+type RegisterInfo struct {
+	Rid				uint
+	Lid				uint
+	BeginTime		time.Time
+	LessonName		string
+	DeleteStatus	int
+}
+
 func (Register) TableName() string {
 	return "Register"
 }
@@ -51,10 +59,10 @@ func DeleteRegister(rid uint) {
 	Db.Save(&register)
 }
 
-func StuSelectRegister(sid uint) (Register, bool) {
-	var register Register
+func StuSelectRegister(sid uint) (RegisterInfo, bool) {
+	var register RegisterInfo
 	var ok bool
-	Db.Table("StuLesson").Select("Lesson.lesson_name, Register.*").Joins("inner join Lesson").Joins("inner join Register").Where("Register.delete_status = ? AND StuLesson.sid = ?", 1, sid).First(register)
+	Db.Table("StuLesson").Select("Lesson.lesson_name, Register.*").Joins("inner join Lesson").Joins("inner join Register").Where("Register.delete_status = ? AND StuLesson.sid = ?", 1, sid).Last(&register)
 	if register.Rid == 0{
 		ok = false
 	} else {

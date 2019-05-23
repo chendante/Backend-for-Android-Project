@@ -36,3 +36,18 @@ func SignToken(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func StudentInfo(c *gin.Context) {
+	token := c.PostForm("token")
+	id := model.Token2ID(token)
+	if id == 0{
+		token = ""
+	}
+	re, ok := model.StuSelectRegister(id)
+	c.JSON(200, gin.H{
+		"success":  ok,
+		"register": re,
+		"question": re,
+		"token": token,
+	})
+}
