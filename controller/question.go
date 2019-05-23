@@ -74,3 +74,21 @@ func PostAnswer(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func SelectAnswers(c *gin.Context) {
+	token := c.PostForm("token")
+	id := model.Token2ID(token)
+	if id == 0{
+		token = ""
+	}
+	qid := c.PostForm("qid")
+	uid, _ := strconv.Atoi(qid)
+	questionNum := c.PostForm("questionNum")
+	tmp, _ := strconv.Atoi(questionNum)
+	answers := model.SelectAnswers(uint(uid), uint(tmp))
+	c.JSON(200, gin.H{
+		"success":  true,
+		"token": token,
+		"answers":answers,
+	})
+}

@@ -20,6 +20,16 @@ func (Question) TableName() string {
 	return "Questions"
 }
 
+type QuestionInfo struct {
+	Qid	uint
+	Lid uint
+	QuestionNum uint
+	FileName string
+	FilePath string
+	UniName  string
+	LessonName	string
+}
+
 type Answer struct {
 	Anid	uint
 	Sid		uint
@@ -30,6 +40,15 @@ type Answer struct {
 
 func (Answer) TableName() string {
 	return "Answers"
+}
+
+type AnswerInfo struct {
+	Anid	uint
+	Sid		uint
+	Qid		uint
+	QuestionNum	uint
+	AnswerString string
+	Name	string
 }
 
 func CreateQuestion(lid uint, file *multipart.FileHeader, c *gin.Context) (string, bool) {
@@ -71,10 +90,14 @@ func PostAnswer(sid uint, qid uint, questionNum uint, answerString string) bool 
 	return !Db.NewRecord(answer)
 }
 
-//func SelectAnswers(qid uint, questionNum uint) []Answer {
-//
-//}
+func SelectAnswers(qid uint, questionNum uint) []AnswerInfo {
+	var answerInfos []AnswerInfo
+	Db.Table("Answers").Select("Answers.*, user.name").Joins("inner Join user on Answers.sid = user.id").Where("Answers.qid = ? AND Answers.question_num = ?", qid, questionNum).Find(&answerInfos)
+	return answerInfos
+}
 
-//func SelectStudentQuestion(sid uint) {
-//
-//}
+func SelectStudentQuestion(sid uint) QuestionInfo {
+	var questionInfo QuestionInfo
+	Db.Table("StuLesson").Select("Questions.* , Lesson.lesson_name").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner Join Questions on Questions.lid = Lesson.lid").Where("StuLesson.sid = ? AND Questions.question_num != 0", sid).Last(&questionInfo)
+	return questionInfo
+}

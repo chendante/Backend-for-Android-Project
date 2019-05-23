@@ -10,12 +10,13 @@ func NewRegister(c *gin.Context) {
 	var rid int
 	token, _ := c.GetPostForm("token")
 	lid, _ := c.GetPostForm("lid")
+	gps, _ := c.GetPostForm("gps")
 	id := model.Token2ID(token)
 	if id == 0{
 		token = ""
 	} else {
 		uid, _ := strconv.Atoi(lid)
-		rid = model.CreateRegister(uint(uid))
+		rid = model.CreateRegister(uint(uid),gps)
 	}
 	c.JSON(200, gin.H{
 		"rid": rid,
@@ -59,12 +60,13 @@ func StuAttend(c *gin.Context) {
 	token, _ := c.GetPostForm("token")
 	rid, _ := c.GetPostForm("rid")
 	id := model.Token2ID(token)
+	gps, _ := c.GetPostForm("gps")
 	var success = false
 	if id == 0{
 		token = ""
 	} else {
 		uid, _ := strconv.Atoi(rid)
-		success = model.PostAttendance(id, uint(uid))
+		success = model.PostAttendance(id, uint(uid), gps)
 	}
 	c.JSON(200, gin.H{
 		"token": token,

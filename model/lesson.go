@@ -70,7 +70,7 @@ func UploadAttachment(file *multipart.FileHeader, c *gin.Context, tid uint, lid 
 	if tid == 0{
 		return "", false
 	}
-	uniName := getUniName()
+	uniName := file.Filename
 	fileName := file.Filename
 	filePath := UploadUri + uniName
 	err := c.SaveUploadedFile(file, filePath)
