@@ -42,6 +42,7 @@ type AttendanceInfo struct {
 	Sid		uint
 	AnswerTime	time.Time
 	Name	string
+	Distance		string
 }
 
 func CreateRegister(lid uint, gps string) int {

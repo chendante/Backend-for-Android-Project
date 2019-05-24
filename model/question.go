@@ -92,6 +92,7 @@ func PostAnswer(sid uint, qid uint, questionNum uint, answerString string) bool 
 
 func SelectAnswers(qid uint, questionNum uint) []AnswerInfo {
 	var answerInfos []AnswerInfo
+	//Db.Table("Questions").Select("Answers.*, user.name").Joins("inner Join StuLesson on StuLesson.lid = Questions.lid").Joins("inner Join user on StuLesson.sid = user.id").Joins("left Join Answers on Answers.sid = StuLesson.sid and Answers.qid = Questions.qid").Where("Answers.qid = ? AND Answers.question_num = ?", qid, questionNum)
 	Db.Table("Answers").Select("Answers.*, user.name").Joins("inner Join user on Answers.sid = user.id").Where("Answers.qid = ? AND Answers.question_num = ?", qid, questionNum).Find(&answerInfos)
 	return answerInfos
 }
