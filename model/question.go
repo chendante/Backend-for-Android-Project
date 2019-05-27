@@ -68,6 +68,9 @@ func CreateQuestion(lid uint, file *multipart.FileHeader, c *gin.Context) (strin
 }
 
 func UpdateQuestion(Qid uint, questionNum uint) {
+	var tmp Question
+	Db.Where(Question{Lid:Qid}).Last(&tmp)
+	Qid = tmp.Qid
 	var question Question
 	Db.First(&question, Qid)
 	question.QuestionNum = questionNum
