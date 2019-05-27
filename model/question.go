@@ -80,7 +80,7 @@ func GetQuestionFileUrl(Qid uint) (string, bool) {
 	if rowNum == 0{
 		return "", false
 	} else {
-		return DownloadUrl(question.UniName), true
+		return question.FilePath, true
 	}
 }
 
@@ -91,6 +91,9 @@ func PostAnswer(sid uint, qid uint, questionNum uint, answerString string) bool 
 }
 
 func SelectAnswers(qid uint, questionNum uint) []AnswerInfo {
+	var question Question
+	Db.Where(Question{Lid:qid}).Last(&question)
+	qid = question.Qid
 	var answerInfos []AnswerInfo
 	//Db.Table("Questions").Select("Answers.*, user.name").Joins("inner Join StuLesson on StuLesson.lid = Questions.lid").Joins("inner Join user on StuLesson.sid = user.id").Joins("left Join Answers on Answers.sid = StuLesson.sid and Answers.qid = Questions.qid").Where("Answers.qid = ? AND Answers.question_num = ?", qid, questionNum)
 	Db.Table("Answers").Select("Answers.*, user.name").Joins("inner Join user on Answers.sid = user.id").Where("Answers.qid = ? AND Answers.question_num = ?", qid, questionNum).Find(&answerInfos)

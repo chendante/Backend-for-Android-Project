@@ -68,7 +68,7 @@ func GetDownloadUrl(c *gin.Context) {
 		uniName, success := model.GetAttachmentUniName(uid)
 		var downloadUrl string
 		if success{
-			downloadUrl = model.DownloadUrl(uniName)
+			downloadUrl = uniName
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"token": token,

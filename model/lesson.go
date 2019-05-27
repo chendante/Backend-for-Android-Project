@@ -94,7 +94,7 @@ func GetAttachmentUniName(lid uint) (string, bool) {
 	if rowNum == 0{
 		return "", false
 	} else {
-		return attachment.UniName, true
+		return attachment.FilePath, true
 	}
 }
 
