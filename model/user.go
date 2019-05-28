@@ -80,6 +80,7 @@ func Token2ID(token string) uint {
 	if err == nil{
 		return uint(id)
 	} else {
+		fmt.Println("Token2ID error:",err.Error())
 		return 0
 	}
 }
