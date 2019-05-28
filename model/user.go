@@ -70,7 +70,7 @@ func CreatToken(id uint) string {
 	var err error
 	_, err = MRedis.Do("set", token, id) //设置3天过期
 	if err != nil{
-		fmt.Print(err.Error())
+		fmt.Println("token create error:",err.Error())
 	}
 	return token
 }
