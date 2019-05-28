@@ -68,7 +68,7 @@ func StuSelectRegister(sid uint) (RegisterInfo, bool) {
 		ok = false
 	} else {
 		var attendanceBook AttendanceBook
-		Db.Where(&AttendanceBook{Rid:register.Rid}).First(&attendanceBook)
+		Db.Where(&AttendanceBook{Rid:register.Rid, Sid:sid}).Last(&attendanceBook)
 		if attendanceBook.Adid == 0{
 			ok = true
 		} else {

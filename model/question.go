@@ -105,6 +105,6 @@ func SelectAnswers(qid uint, questionNum uint) []AnswerInfo {
 
 func SelectStudentQuestion(sid uint) QuestionInfo {
 	var questionInfo QuestionInfo
-	Db.Table("StuLesson").Select("Questions.* , Lesson.lesson_name").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner Join Questions on Questions.lid = Lesson.lid").Where("StuLesson.sid = ? AND Questions.question_num != 0", sid).Last(&questionInfo)
+	Db.Table("StuLesson").Select("Questions.* , Lesson.lesson_name").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner Join Questions on Questions.lid = Lesson.lid").Where("StuLesson.sid = ? AND Questions.question_num <> ?", sid, 0).Last(&questionInfo)
 	return questionInfo
 }
