@@ -44,6 +44,9 @@ func StudentInfo(c *gin.Context) {
 		token = ""
 	}
 	re, ok := model.StuSelectRegister(id)
+	if !ok {
+		re.Rid = 0
+	}
 	qu := model.SelectStudentQuestion(id)
 	c.JSON(200, gin.H{
 		"success":  ok,
