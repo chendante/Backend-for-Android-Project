@@ -67,7 +67,11 @@ func CreatToken(id uint) string {
 	h := md5.New()
 	io.WriteString(h, strconv.FormatInt(cruTime, 10))
 	token := fmt.Sprintf("%x", h.Sum(nil))
-	_, _ = MRedis.Do("set", token, id, "EX", 10*24*3600) //设置3天过期
+	var err error
+	_, err = MRedis.Do("set", token, id) //设置3天过期
+	if err != nil{
+		fmt.Print(err.Error())
+	}
 	return token
 }
 
