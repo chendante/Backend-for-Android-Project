@@ -13,8 +13,9 @@ var Db *gorm.DB
 var MRedis redis.Conn
 var BaseUrl string
 var UploadUri	string
-
+var TokenID map[string]uint
 func init() {
+	TokenID = make(map[string]uint)
 	var err error
 	bytes, err := ioutil.ReadFile("data.json")
 	if err != nil {

@@ -4,7 +4,6 @@ import (
 	. "Backend-for-Android-Project/model/base"
 	"crypto/md5"
 	"fmt"
-	"github.com/gomodule/redigo/redis"
 	"io"
 	"strconv"
 	"time"
@@ -67,20 +66,22 @@ func CreatToken(id uint) string {
 	h := md5.New()
 	io.WriteString(h, strconv.FormatInt(cruTime, 10))
 	token := fmt.Sprintf("%x", h.Sum(nil))
-	var err error
-	_, err = MRedis.Do("set", token, id) //设置3天过期
-	if err != nil{
-		fmt.Println("token create error:",err.Error())
-	}
+	//var err error
+	//_, err = MRedis.Do("set", token, id) //设置3天过期
+	TokenID[token] = id
+	//if err != nil{
+	//	fmt.Println("token create error:",err.Error())
+	//}
 	return token
 }
 
 func Token2ID(token string) uint {
-	id, err := redis.Uint64(MRedis.Do("get", token))
-	if err == nil{
-		return uint(id)
+	id, ok := TokenID[token]
+	//id, err := redis.Uint64(MRedis.Do("get", token))
+	if ok{
+		return id
 	} else {
-		fmt.Println("Token2ID error:",err.Error())
+		//fmt.Println("Token2ID error:",err.Error())
 		return 0
 	}
 }
