@@ -63,7 +63,7 @@ func DeleteRegister(rid uint) {
 func StuSelectRegister(sid uint) (RegisterInfo, bool) {
 	var register RegisterInfo
 	var ok bool
-	Db.Table("StuLesson").Select("Lesson.lesson_name, Register.rid, Register.lid, Register.begin_time").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner join Register").Where("Register.delete_status = ? AND StuLesson.sid = ?", 1, sid).Last(&register)
+	Db.Table("StuLesson").Select("Lesson.lesson_name, Register.rid, Register.lid, Register.begin_time").Joins("inner join Lesson on Lesson.lid = StuLesson.lid").Joins("inner join Register on Register.lid = StuLesson.lid").Where("Register.delete_status = ? AND StuLesson.sid = ?", 1, sid).Last(&register)
 	if register.Rid == 0{
 		ok = false
 	} else {
